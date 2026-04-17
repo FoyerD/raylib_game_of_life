@@ -52,10 +52,17 @@ void init_grid() {
 
     for (int row = 0; row < LENGTH; row++) {
         for (int col = 0; col < WIDTH; col++) {
-            curr_grid->matrix[row][col] = rand() % 2;
+            curr_grid->matrix[row][col] = 0;
             next_grid->matrix[row][col] = 0;
         }
     }
+
+
+    curr_grid->matrix[10][12] = 1;
+    curr_grid->matrix[11][10] = 1;
+    curr_grid->matrix[12][12] = 1;
+    curr_grid->matrix[12][11] = 1;
+    curr_grid->matrix[12][12] = 1;
 }
 
 
