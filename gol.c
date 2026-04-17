@@ -1,9 +1,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include "raylib.h"
 
 #define WIDTH 20
 #define LENGTH 20
+
+#define WIN_WIDTH 800
+#define WIN_LENGTH 450
 
 struct grid {
     short matrix[LENGTH][WIDTH];
@@ -17,15 +21,25 @@ void draw_grid();
 void update_grid();
 
 int main(int argc, char** argv) {
+    InitWindow(WIN_LENGTH, WIN_LENGTH, "raylib example - basic window");
     init_grid();
 
-    while (1) {
+    while (!WindowShouldClose())
+    {
         system("clear");
-        draw_grid();
+        
+        BeginDrawing();
+            ClearBackground(RAYWHITE);
+            DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
+            draw_grid();
+        EndDrawing();
+
         update_grid();
         sleep(1);
+
     }
 
+    CloseWindow(); 
     return 0;
 }
 
