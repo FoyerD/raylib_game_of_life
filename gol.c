@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
         EndDrawing();
 
         update_grid();
-        sleep(1);
+        // sleep(1);
 
     }
 
