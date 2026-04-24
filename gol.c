@@ -3,8 +3,8 @@
 #include <unistd.h>
 #include "raylib.h"
 
-#define WIDTH 20
-#define LENGTH 20
+#define WIDTH 50
+#define LENGTH 25
 
 #define WIN_WIDTH 800
 #define WIN_LENGTH 450
@@ -19,6 +19,7 @@ int curr_grid_id = 0;
 void init_grid();
 void draw_grid();
 void update_grid();
+int wrap_index(int i, bool col);
 
 int main(int argc, char** argv) {
     InitWindow(WIN_LENGTH, WIN_LENGTH, "raylib example - basic window");
@@ -60,7 +61,7 @@ void init_grid() {
 
     curr_grid->matrix[10][12] = 1;
     curr_grid->matrix[11][10] = 1;
-    curr_grid->matrix[12][12] = 1;
+    curr_grid->matrix[11][12] = 1;
     curr_grid->matrix[12][11] = 1;
     curr_grid->matrix[12][12] = 1;
 }
@@ -85,28 +86,33 @@ void update_grid() {
     struct grid* curr_grid = (grids+curr_grid_id);
     struct grid* next_grid = (grids+next_grid_id);
 
-    for (int row = 1; row < LENGTH-1; row++) {
-        for (int col = 1; col < WIDTH-1; col++) {
+    for (int row = 0; row < LENGTH; row++) {
+        for (int col = 0; col < WIDTH; col++) {
             n_neighbors = 0;
 
             // count neighbors
-            n_neighbors += curr_grid->matrix[row-1][col-1];
-            n_neighbors += curr_grid->matrix[row-1][col];
-            n_neighbors += curr_grid->matrix[row-1][col+1];
-            n_neighbors += curr_grid->matrix[row][col-1];
-            n_neighbors += curr_grid->matrix[row][col+1];
-            n_neighbors += curr_grid->matrix[row+1][col-1];
-            n_neighbors += curr_grid->matrix[row+1][col];
-            n_neighbors += curr_grid->matrix[row+1][col+1];
+            n_neighbors += curr_grid->matrix[wrap_index(row-1, false)][wrap_index(col-1, true)];
+            n_neighbors += curr_grid->matrix[wrap_index(row-1, false)][wrap_index(col, true)];
+            n_neighbors += curr_grid->matrix[wrap_index(row-1, false)][wrap_index(col+1, true)];
+            n_neighbors += curr_grid->matrix[wrap_index(row, false)][wrap_index(col-1, true)];
+            n_neighbors += curr_grid->matrix[wrap_index(row, false)][wrap_index(col+1, true)];
+            n_neighbors += curr_grid->matrix[wrap_index(row+1, false)][wrap_index(col-1, true)];
+            n_neighbors += curr_grid->matrix[wrap_index(row+1, false)][wrap_index(col, true)];
+            n_neighbors += curr_grid->matrix[wrap_index(row+1, false)][wrap_index(col+1, true)];
 
             // live cell
             if (curr_grid->matrix[row][col]) {
+                // solitude
                 if (n_neighbors < 2){
                     next_grid->matrix[row][col] = 0;
                 }
+
+                // yay yay yay!
                 else if (n_neighbors == 2 || n_neighbors == 3) {
                     next_grid->matrix[row][col] = 1;
                 }
+
+                // overpopulation
                 else {
                     next_grid->matrix[row][col] = 0;
                 }
@@ -114,12 +120,30 @@ void update_grid() {
             
             // dead cell(s)
             else {
+                // its alive
                 if (n_neighbors == 3) {
                     next_grid->matrix[row][col] = 1;
+                }
+                else {
+                    next_grid->matrix[row][col] = curr_grid->matrix[row][col];
                 }
             }
         }
     } 
 
     curr_grid_id = next_grid_id;
+}
+
+
+int wrap_index(int i, bool col) {
+    int denumerator = col ? WIDTH : LENGTH;
+    if (i > 0) {
+        i = i % denumerator;
+    }
+    else if (i < 0) {
+        i = i % denumerator + denumerator;
+    }
+
+    return i;
+
 }
