@@ -4,39 +4,39 @@
 #include "raylib.h"
 
 #define WIDTH 50
-#define LENGTH 25
+#define HEIGHT 50
 
-#define WIN_WIDTH 800
-#define WIN_LENGTH 450
+#define WIN_WIDTH 500
+#define WIN_HEIGHT 500 
+
+#define CELL_SIZE 10
 
 struct grid {
-    short matrix[LENGTH][WIDTH];
+    short matrix[HEIGHT][WIDTH];
 };
 
 struct grid grids[2];
 int curr_grid_id = 0;
 
 void init_grid();
+void draw_grid_cli();
 void draw_grid();
 void update_grid();
 int wrap_index(int i, bool col);
 
 int main(int argc, char** argv) {
-    InitWindow(WIN_LENGTH, WIN_LENGTH, "raylib example - basic window");
+    InitWindow(WIN_WIDTH, WIN_HEIGHT, "Jhon Conway's Game of Life");
     init_grid();
 
     while (!WindowShouldClose())
     {
-        system("clear");
-        
         BeginDrawing();
-            ClearBackground(RAYWHITE);
-            DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
+            ClearBackground(BLANK);
             draw_grid();
         EndDrawing();
 
         update_grid();
-        // sleep(1);
+        usleep(50000);
 
     }
 
@@ -51,7 +51,7 @@ void init_grid() {
     struct grid* curr_grid = (grids + curr_grid_id);
     struct grid* next_grid =  (grids + next_grid_id);
 
-    for (int row = 0; row < LENGTH; row++) {
+    for (int row = 0; row < HEIGHT; row++) {
         for (int col = 0; col < WIDTH; col++) {
             curr_grid->matrix[row][col] = 0;
             next_grid->matrix[row][col] = 0;
@@ -67,15 +67,27 @@ void init_grid() {
 }
 
 
-void draw_grid() {
+void draw_grid_cli() {
     struct grid* curr_grid = (grids + curr_grid_id);
 
-    printf("curr grid: %d\n", curr_grid_id);
-    for (int row = 0; row < LENGTH; row++) {
+    for (int row = 0; row < HEIGHT; row++) {
         for (int col = 0; col < WIDTH; col++) {
             printf("%c", curr_grid->matrix[row][col] ? '*' : ' ');
         }
         printf("\n");
+    }
+}
+
+void draw_grid() {
+    struct grid* curr_grid = (grids + curr_grid_id);
+    int cell_size = WIN_HEIGHT / HEIGHT;
+    
+    for (int row = 0; row < HEIGHT; row++) {
+        for (int col = 0; col < WIDTH; col++) {
+            if (curr_grid->matrix[row][col]) {
+                DrawRectangle(row * cell_size, col * cell_size, cell_size, cell_size, RAYWHITE);
+            }
+        }
     }
 }
 
@@ -86,7 +98,8 @@ void update_grid() {
     struct grid* curr_grid = (grids+curr_grid_id);
     struct grid* next_grid = (grids+next_grid_id);
 
-    for (int row = 0; row < LENGTH; row++) {
+    system("clear");
+    for (int row = 0; row < HEIGHT; row++) {
         for (int col = 0; col < WIDTH; col++) {
             n_neighbors = 0;
 
@@ -136,7 +149,7 @@ void update_grid() {
 
 
 int wrap_index(int i, bool col) {
-    int denumerator = col ? WIDTH : LENGTH;
+    int denumerator = col ? WIDTH : HEIGHT;
     if (i > 0) {
         i = i % denumerator;
     }
