@@ -29,7 +29,8 @@ int main(int argc, char** argv) {
     InitWindow(WIN_WIDTH, WIN_HEIGHT, "Jhon Conway's Game of Life");
     init_grid();
 
-    while (!WindowShouldClose())
+    int quit = false;
+    while (!WindowShouldClose() && !quit)
     {
         BeginDrawing();
             ClearBackground(BLANK);
@@ -37,6 +38,11 @@ int main(int argc, char** argv) {
         EndDrawing();
 
         update_grid();
+
+        if (IsKeyPressed(KEY_Q)) {
+
+        }
+
         usleep(50000);
 
     }
