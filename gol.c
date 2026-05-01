@@ -3,11 +3,11 @@
 #include <unistd.h>
 #include "raylib.h"
 
-#define WIDTH 50
-#define HEIGHT 50
+#define WIDTH 192
+#define HEIGHT 108
 
-#define WIN_WIDTH 500
-#define WIN_HEIGHT 500 
+#define WIN_WIDTH GetScreenWidth()
+#define WIN_HEIGHT GetScreenHeight()
 
 #define CELL_SIZE 10
 
@@ -25,6 +25,7 @@ void update_grid();
 int wrap_index(int i, bool col);
 
 int main(int argc, char** argv) {
+    SetConfigFlags(FLAG_WINDOW_HIGHDPI | FLAG_WINDOW_RESIZABLE);
     InitWindow(WIN_WIDTH, WIN_HEIGHT, "Jhon Conway's Game of Life");
     init_grid();
 
@@ -70,6 +71,7 @@ void init_grid() {
 void draw_grid_cli() {
     struct grid* curr_grid = (grids + curr_grid_id);
 
+    system("clear");
     for (int row = 0; row < HEIGHT; row++) {
         for (int col = 0; col < WIDTH; col++) {
             printf("%c", curr_grid->matrix[row][col] ? '*' : ' ');
@@ -85,10 +87,11 @@ void draw_grid() {
     for (int row = 0; row < HEIGHT; row++) {
         for (int col = 0; col < WIDTH; col++) {
             if (curr_grid->matrix[row][col]) {
-                DrawRectangle(row * cell_size, col * cell_size, cell_size, cell_size, RAYWHITE);
+                DrawRectangle(col * cell_size, row * cell_size, cell_size, cell_size, RAYWHITE);
             }
         }
     }
+    DrawRectangle(0, 0, cell_size, cell_size, RAYWHITE);
 }
 
 
@@ -98,7 +101,6 @@ void update_grid() {
     struct grid* curr_grid = (grids+curr_grid_id);
     struct grid* next_grid = (grids+next_grid_id);
 
-    system("clear");
     for (int row = 0; row < HEIGHT; row++) {
         for (int col = 0; col < WIDTH; col++) {
             n_neighbors = 0;
@@ -120,7 +122,7 @@ void update_grid() {
                     next_grid->matrix[row][col] = 0;
                 }
 
-                // yay yay yay!
+                // amaze amaze amaze
                 else if (n_neighbors == 2 || n_neighbors == 3) {
                     next_grid->matrix[row][col] = 1;
                 }
@@ -156,7 +158,6 @@ int wrap_index(int i, bool col) {
     else if (i < 0) {
         i = i % denumerator + denumerator;
     }
-
     return i;
 
 }
