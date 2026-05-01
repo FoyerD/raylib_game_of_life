@@ -10,18 +10,26 @@
 #define WIN_HEIGHT GetScreenHeight()
 
 #define CELL_SIZE 10
+#define BASE_SLEEP 50000
+#define SLEEP_STEP 5000
 
 struct grid {
     short matrix[HEIGHT][WIDTH];
 };
 
+// grids
 struct grid grids[2];
 int curr_grid_id = 0;
+
+// key settings
+int sleep_time = BASE_SLEEP;
+int quit = false;
 
 void init_grid();
 void draw_grid_cli();
 void draw_grid();
 void update_grid();
+void check_keys();
 int wrap_index(int i, bool col);
 
 int main(int argc, char** argv) {
@@ -29,7 +37,6 @@ int main(int argc, char** argv) {
     InitWindow(WIN_WIDTH, WIN_HEIGHT, "Jhon Conway's Game of Life");
     init_grid();
 
-    int quit = false;
     while (!WindowShouldClose() && !quit)
     {
         BeginDrawing();
@@ -38,12 +45,8 @@ int main(int argc, char** argv) {
         EndDrawing();
 
         update_grid();
-
-        if (IsKeyPressed(KEY_Q)) {
-
-        }
-
-        usleep(50000);
+        check_keys();
+        usleep(sleep_time);
 
     }
 
@@ -166,4 +169,22 @@ int wrap_index(int i, bool col) {
     }
     return i;
 
+}
+
+
+
+
+
+void check_keys() {
+    if (IsKeyPressed(KEY_Q)) {
+        quit = true;
+    }
+    
+    if (IsKeyPressed(KEY_DOWN) || IsKeyPressed(KEY_J)) {
+        sleep_time += SLEEP_STEP;
+    }
+    
+    if (IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_K)) {
+        sleep_time -= sleep_time-SLEEP_STEP > 0 ? SLEEP_STEP : 0;
+    }
 }
