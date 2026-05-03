@@ -24,6 +24,7 @@ int curr_grid_id = 0;
 // key settings
 int sleep_time = BASE_SLEEP;
 int quit = false;
+int stop = false;
 
 void init_grid();
 void draw_grid_cli();
@@ -39,12 +40,18 @@ int main(int argc, char** argv) {
 
     while (!WindowShouldClose() && !quit)
     {
+        if(quit) {
+            break;
+        }
+
         BeginDrawing();
             ClearBackground(BLANK);
             draw_grid();
         EndDrawing();
 
-        update_grid();
+        if (!stop) {
+            update_grid();
+        }
         check_keys();
         usleep(sleep_time);
 
@@ -186,5 +193,10 @@ void check_keys() {
     
     if (IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_K)) {
         sleep_time -= sleep_time-SLEEP_STEP > 0 ? SLEEP_STEP : 0;
+    }
+
+    if (IsKeyPressed(KEY_SPACE)) {
+        printf("Pressed space\n");
+        stop = !stop;
     }
 }
