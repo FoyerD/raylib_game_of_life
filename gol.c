@@ -9,7 +9,7 @@
 #define WIN_WIDTH GetScreenWidth()
 #define WIN_HEIGHT GetScreenHeight()
 
-#define CELL_SIZE 10
+#define CELL_SIZE (WIN_HEIGHT / HEIGHT)
 #define BASE_SLEEP 50000
 #define SLEEP_STEP 5000
 
@@ -24,13 +24,14 @@ int curr_grid_id = 0;
 // key settings
 int sleep_time = BASE_SLEEP;
 int quit = false;
-int stop = false;
+int stop = true;
 
 void init_grid();
 void draw_grid_cli();
 void draw_grid();
 void update_grid();
 void check_keys();
+void check_mouse();
 int wrap_index(int i, bool col);
 
 int main(int argc, char** argv) {
@@ -52,7 +53,10 @@ int main(int argc, char** argv) {
         if (!stop) {
             update_grid();
         }
+
         check_keys();
+        check_mouse();
+
         usleep(sleep_time);
 
     }
@@ -98,16 +102,13 @@ void draw_grid_cli() {
 
 void draw_grid() {
     struct grid* curr_grid = (grids + curr_grid_id);
-    int cell_size = WIN_HEIGHT / HEIGHT;
-    
     for (int row = 0; row < HEIGHT; row++) {
         for (int col = 0; col < WIDTH; col++) {
             if (curr_grid->matrix[row][col]) {
-                DrawRectangle(col * cell_size, row * cell_size, cell_size, cell_size, RAYWHITE);
+                DrawRectangle(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE, RAYWHITE);
             }
         }
     }
-    DrawRectangle(0, 0, cell_size, cell_size, RAYWHITE);
 }
 
 
@@ -198,5 +199,18 @@ void check_keys() {
     if (IsKeyPressed(KEY_SPACE)) {
         printf("Pressed space\n");
         stop = !stop;
+    }
+}
+
+void check_mouse() {
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        int mouse_x = GetMouseX();
+        int mouse_y = GetMouseY();
+
+        int cell_col = (mouse_x - (mouse_x % CELL_SIZE)) / CELL_SIZE;
+        int cell_row = (mouse_y - (mouse_y % CELL_SIZE)) / CELL_SIZE;
+
+
+        grids[curr_grid_id].matrix[cell_row][cell_col] = !grids[curr_grid_id].matrix[cell_row][cell_col];
     }
 }
