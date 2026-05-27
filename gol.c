@@ -37,6 +37,7 @@ int wrap_index(int i, bool col);
 int main(int argc, char** argv) {
     SetConfigFlags(FLAG_WINDOW_HIGHDPI | FLAG_WINDOW_RESIZABLE);
     InitWindow(WIN_WIDTH, WIN_HEIGHT, "Jhon Conway's Game of Life");
+    SetTargetFPS(60);
     init_grid();
 
     while (!WindowShouldClose() && !quit)
@@ -197,7 +198,6 @@ void check_keys() {
     }
 
     if (IsKeyPressed(KEY_SPACE)) {
-        printf("Pressed space\n");
         stop = !stop;
     }
 }
@@ -206,12 +206,9 @@ void check_mouse() {
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         int mouse_x = GetMouseX();
         int mouse_y = GetMouseY();
-        printf("click x: %d, y: %d", mouse_x, mouse_y);
 
         int cell_col = (mouse_x - (mouse_x % CELL_SIZE)) / CELL_SIZE;
         int cell_row = (mouse_y - (mouse_y % CELL_SIZE)) / CELL_SIZE;
-
-        printf("click col: %d, row: %d", cell_col, cell_row);
 
         grids[curr_grid_id].matrix[cell_row][cell_col] = 1;
     }
@@ -219,12 +216,9 @@ void check_mouse() {
     if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
         int mouse_x = GetMouseX();
         int mouse_y = GetMouseY();
-        printf("click x: %d, y: %d", mouse_x, mouse_y);
 
         int cell_col = (mouse_x - (mouse_x % CELL_SIZE)) / CELL_SIZE;
         int cell_row = (mouse_y - (mouse_y % CELL_SIZE)) / CELL_SIZE;
-
-        printf("click col: %d, row: %d", cell_col, cell_row);
 
         grids[curr_grid_id].matrix[cell_row][cell_col] = 0;
     }
