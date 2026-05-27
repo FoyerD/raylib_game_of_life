@@ -203,7 +203,7 @@ void check_keys() {
 }
 
 void check_mouse() {
-    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         int mouse_x = GetMouseX();
         int mouse_y = GetMouseY();
         printf("click x: %d, y: %d", mouse_x, mouse_y);
@@ -213,6 +213,19 @@ void check_mouse() {
 
         printf("click col: %d, row: %d", cell_col, cell_row);
 
-        grids[curr_grid_id].matrix[cell_row][cell_col] = !grids[curr_grid_id].matrix[cell_row][cell_col];
+        grids[curr_grid_id].matrix[cell_row][cell_col] = 1;
+    }
+
+    if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
+        int mouse_x = GetMouseX();
+        int mouse_y = GetMouseY();
+        printf("click x: %d, y: %d", mouse_x, mouse_y);
+
+        int cell_col = (mouse_x - (mouse_x % CELL_SIZE)) / CELL_SIZE;
+        int cell_row = (mouse_y - (mouse_y % CELL_SIZE)) / CELL_SIZE;
+
+        printf("click col: %d, row: %d", cell_col, cell_row);
+
+        grids[curr_grid_id].matrix[cell_row][cell_col] = 0;
     }
 }
