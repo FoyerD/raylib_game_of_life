@@ -21,6 +21,12 @@ struct grid {
 struct grid grids[2];
 int curr_grid_id = 0;
 
+//mouse pos
+int mouse_x = 0;
+int mouse_y = 0;
+int cursor_cell_col = 0;
+int cursor_cell_row = 0;
+
 // key settings
 int sleep_time = BASE_SLEEP;
 int quit = false;
@@ -32,6 +38,7 @@ void draw_grid();
 void update_grid();
 void check_keys();
 void check_mouse();
+void update_mouse();
 int wrap_index(int i, bool col);
 
 int main(int argc, char** argv) {
@@ -55,6 +62,8 @@ int main(int argc, char** argv) {
             update_grid();
         }
 
+        // updates
+        update_mouse();
         check_keys();
         check_mouse();
 
@@ -105,7 +114,8 @@ void draw_grid() {
     struct grid* curr_grid = (grids + curr_grid_id);
     for (int row = 0; row < HEIGHT; row++) {
         for (int col = 0; col < WIDTH; col++) {
-            if (curr_grid->matrix[row][col]) {
+            if (curr_grid->matrix[row][col] && 
+                !(cursor_cell_row == row && cursor_cell_col == col)) {
                 DrawRectangle(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE, RAYWHITE);
             }
         }
@@ -113,7 +123,7 @@ void draw_grid() {
 }
 
 
-void update_grid() {
+void update_grid() { 
     int n_neighbors = 0;
     int next_grid_id = (curr_grid_id + 1) % 2;
     struct grid* curr_grid = (grids+curr_grid_id);
@@ -204,22 +214,19 @@ void check_keys() {
 
 void check_mouse() {
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-        int mouse_x = GetMouseX();
-        int mouse_y = GetMouseY();
-
-        int cell_col = (mouse_x - (mouse_x % CELL_SIZE)) / CELL_SIZE;
-        int cell_row = (mouse_y - (mouse_y % CELL_SIZE)) / CELL_SIZE;
-
-        grids[curr_grid_id].matrix[cell_row][cell_col] = 1;
+        grids[curr_grid_id].matrix[cursor_cell_row][cursor_cell_col] = 1;
     }
 
     if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
-        int mouse_x = GetMouseX();
-        int mouse_y = GetMouseY();
-
-        int cell_col = (mouse_x - (mouse_x % CELL_SIZE)) / CELL_SIZE;
-        int cell_row = (mouse_y - (mouse_y % CELL_SIZE)) / CELL_SIZE;
-
-        grids[curr_grid_id].matrix[cell_row][cell_col] = 0;
+        grids[curr_grid_id].matrix[cursor_cell_row][cursor_cell_col] = 0;
     }
+    
+    DrawRectangle(cursor_cell_col * CELL_SIZE, cursor_cell_row * CELL_SIZE, CELL_SIZE, CELL_SIZE, GREEN);
+}
+
+void update_mouse() {
+    mouse_x = GetMouseX();
+    mouse_y = GetMouseY();
+    cursor_cell_col = (mouse_x - (mouse_x % CELL_SIZE)) / CELL_SIZE;
+    cursor_cell_row = (mouse_y - (mouse_y % CELL_SIZE)) / CELL_SIZE;
 }
