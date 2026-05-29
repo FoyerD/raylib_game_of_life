@@ -3,13 +3,13 @@
 #include <unistd.h>
 #include "raylib.h"
 
-#define WIDTH 160
-#define HEIGHT 90
-
 #define WIN_WIDTH 1600
 #define WIN_HEIGHT 900
 
-#define CELL_SIZE (WIN_HEIGHT / HEIGHT)
+#define WIDTH (WIN_WIDTH/10)
+#define HEIGHT (WIN_HEIGHT/10)
+
+#define CELL_SIZE (WIN_HEIGHT/HEIGHT)
 #define BASE_SLEEP 50000
 #define SLEEP_STEP 5000
 
@@ -199,15 +199,15 @@ void check_keys() {
         quit = true;
     }
     
-    if (IsKeyPressed(KEY_DOWN) || IsKeyPressed(KEY_J)) {
+    if (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_J)) {
         sleep_time += SLEEP_STEP;
     }
     
-    if (IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_K)) {
+    if (IsKeyDown(KEY_UP) || IsKeyDown(KEY_K)) {
         sleep_time -= sleep_time-SLEEP_STEP > 0 ? SLEEP_STEP : 0;
     }
 
-    if (IsKeyPressed(KEY_SPACE)) {
+    if (IsKeyReleased(KEY_SPACE)) {
         stop = !stop;
     }
 }
