@@ -3,11 +3,11 @@
 #include <unistd.h>
 #include "raylib.h"
 
-#define WIN_WIDTH 1600
-#define WIN_HEIGHT 900
+#define WIDTH 160
+#define HEIGHT 90
 
-#define WIDTH (WIN_WIDTH/10)
-#define HEIGHT (WIN_HEIGHT/10)
+#define WIN_WIDTH WIDTH* 10
+#define WIN_HEIGHT HEIGHT * 10
 
 #define CELL_SIZE (WIN_HEIGHT/HEIGHT)
 #define BASE_SLEEP 50000
