@@ -1,18 +1,6 @@
-#define WIDTH 160
-#define HEIGHT 90
-
-struct grid {
-    short matrix[HEIGHT][WIDTH];
-};
-
-// grids
+#include "gol_grid.h"
 struct grid grids[2];
 int curr_grid_id = 0;
-
-
-void init_grid();
-void update_grid();
-int wrap_index(int i, int col);
 
 void init_grid() {
     int next_grid_id = (curr_grid_id + 1) % 2;
@@ -34,9 +22,7 @@ void init_grid() {
     curr_grid->matrix[12][12] = 1;
 }
 
-
-
- void update_grid() { 
+void update_grid() { 
     int n_neighbors = 0;
     int next_grid_id = (curr_grid_id + 1) % 2;
     struct grid* curr_grid = (grids+curr_grid_id);
@@ -99,7 +85,6 @@ int wrap_index(int i, int col) {
         i = i % denumerator + denumerator;
     }
     return i;
-
 }
 
 
