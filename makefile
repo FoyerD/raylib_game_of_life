@@ -12,4 +12,4 @@ gol_grid.o:
 	gcc -c src/gol_grid.c -o bin/gol_grid.o
 
 clean:
-	rm -rf bin/*
+	rm -r bin/*

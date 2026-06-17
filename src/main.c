@@ -30,7 +30,7 @@ void update_mouse();
 
 int main(int argc, char** argv) {
     SetConfigFlags(FLAG_WINDOW_HIGHDPI | FLAG_WINDOW_RESIZABLE);
-    InitWindow(WIN_WIDTH, WIN_HEIGHT, "Jhon Conway's Game of Life");
+    InitWindow(WIN_WIDTH, WIN_HEIGHT, "John Conway's Game of Life");
     SetTargetFPS(60);
     init_grid();
 
